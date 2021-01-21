@@ -1,6 +1,6 @@
-#No authentication required endpoints
+# No authentication required endpoints
 ___
-##Authentication endpoint
+## Authentication endpoint
 
 Returns json data with collection of items.
 
@@ -50,9 +50,9 @@ Returns json data with collection of items.
 This endpoint authenticates and returns cookie with PHPSESSION token.
 Use this cookie in further requests to `Authentication required endpoints`
 
-#Authentication required endpoints
+# Authentication required endpoints
 ___
-##Get Item LIst
+## Get Item LIst
 
 Returns json data with collection of items.
 
@@ -109,7 +109,7 @@ Returns json data with collection of items.
   curl --location --request GET 'http://secure-storage.localhost:8000/item' --header 'Cookie: PHPSESSID=17b2ade879ab83a9a7ac2010744352b7'
   ```
   
-##Crete Item
+## Crete Item
 
 Creates new item.
 
@@ -151,7 +151,7 @@ Creates new item.
   curl --location --request POST 'http://secure-storage.localhost:8000/item?data=new%20item%20secret' --header 'Cookie: PHPSESSID=17b2ade879ab83a9a7ac2010744352b7'
   ```
     
-##Update Item
+## Update Item
 
 Updates item by id.
 
@@ -199,7 +199,7 @@ Updates item by id.
   curl --location --request PUT 'http://secure-storage.localhost:8000/item?id=1&data=new%20secret' --header 'Cookie: PHPSESSID=17b2ade879ab83a9a7ac2010744352b7'
   ```
       
-##Delete Item
+## Delete Item
 
 Deletes item by id.
 
