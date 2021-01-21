@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Unit;
+namespace App\Tests\Unit\Service;
 
 use App\Entity\Item;
 use App\Entity\User;
@@ -37,8 +37,11 @@ class ItemServiceTest extends TestCase
 
         $expectedObject = new Item();
         $expectedObject->setUser($user);
+        $expectedObject->setData($data);
 
-        $this->entityManager->expects($this->once())->method('persist')->with($expectedObject);
+        $this->entityManager->expects($this->once())
+            ->method('persist')
+            ->with($expectedObject);
 
         $this->itemService->create($user, $data);
     }

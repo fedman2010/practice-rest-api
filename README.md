@@ -9,8 +9,11 @@
 * Open in browser: http://secure-storage.localhost:8000/item Should get `Full authentication is required to access this resource.` error, because first you need to make `login` call (see `postman_collection.json` or `SecurityController` for more info).
 
 ### Run tests
+Before you can run tests you need to execute `init-tests` to initialize test DB.
 
-make tests
+After that run test with:
+
+`make tests`
 
 ### API credentials
 

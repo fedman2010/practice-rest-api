@@ -1,4 +1,4 @@
-.PHONY: start stop init build tests
+.PHONY: start stop init build tests init-tests
 
 start:
 	docker-compose up -d
@@ -16,6 +16,11 @@ init:
 
 build:
 	build/build.sh
+
+init-tests:
+	docker-compose exec php php bin/console --env=test doctrine:database:create
+	docker-compose exec php php bin/console --env=test doctrine:migrations:migrate --no-interaction
+	docker-compose exec php php bin/console --env=test doctrine:fixtures:load --no-interaction
 
 tests:
 	docker-compose exec php php vendor/bin/simple-phpunit

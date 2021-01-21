@@ -15,13 +15,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ItemController extends AbstractController
 {
+    private $messageIdAbsent = 'No id parameter';
+    private $messageDataAbsent = 'No data parameter';
+    private $messageItemNotExist = 'No item';
+
     /**
      * @Route("/item", name="item_list", methods={"GET"})
      * @IsGranted("ROLE_USER")
      */
     public function list(): JsonResponse
     {
-        $items = $this->getDoctrine()->getRepository(Item::class)->findBy(['user' => $this->getUser()]);
+        $items = $this->getDoctrine()
+            ->getRepository(Item::class)
+            ->findBy(['user' => $this->getUser()]);
 
         $allItems = [];
         foreach ($items as $item) {
@@ -43,7 +49,7 @@ class ItemController extends AbstractController
         $data = $request->get('data');
 
         if (empty($data)) {
-            return $this->json(['error' => 'No data parameter']);
+            return  $this->createErrorResponse($this->messageDataAbsent);
         }
 
         $itemService->create($this->getUser(), $data);
@@ -52,27 +58,67 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @Route("/item", name="items_delete", methods={"DELETE"})
+     * @Route("/item", name="item_update", methods={"PUT"})
      * @IsGranted("ROLE_USER")
      */
-    public function delete(Request $request)
+    public function update(Request $request, ItemService $itemService)
     {
         $id = $request->get('id');
 
         if (empty($id)) {
-            return $this->json(['error' => 'No data parameter'], Response::HTTP_BAD_REQUEST);
+            return  $this->createErrorResponse($this->messageIdAbsent);
         }
 
-        $item = $this->getDoctrine()->getRepository(Item::class)->find($id);
+        $item = $this->getDoctrine()
+            ->getRepository(Item::class)
+            ->find($id);
 
-        if ($item === null) {
-            return $this->json(['error' => 'No item'], Response::HTTP_BAD_REQUEST);
+        if (!$item || $item->getUser()->getId() != $this->getUser()->getId()) {
+            return  $this->createErrorResponse($this->messageItemNotExist);
         }
 
-        $manager = $this->getDoctrine()->getManager();
-        $manager->remove($item);
-        $manager->flush();
+        $data = $request->get('data');
+
+        if (empty($data)) {
+            return  $this->createErrorResponse($this->messageDataAbsent);
+        }
+
+        $itemService->update($item, $data);
 
         return $this->json([]);
+    }
+
+    /**
+     * @Route("/item", name="items_delete", methods={"DELETE"})
+     * @IsGranted("ROLE_USER")
+     */
+    public function delete(Request $request, ItemService $itemService)
+    {
+        $id = $request->get('id');
+
+        if (empty($id)) {
+            return $this->createErrorResponse($this->messageIdAbsent);
+        }
+
+        $item = $this->getDoctrine()
+            ->getRepository(Item::class)
+            ->find($id);
+
+        if ($item === null || $item->getUser()->getId() != $this->getUser()->getId()) {
+            return  $this->createErrorResponse($this->messageItemNotExist);
+        }
+
+        $itemService->delete($item);
+
+        return $this->json([]);
+    }
+
+    /**
+     * @param string $message
+     * @return JsonResponse
+     */
+    private function createErrorResponse(string $message)
+    {
+        return $this->json(['error' => $message], Response::HTTP_BAD_REQUEST);
     }
 }
