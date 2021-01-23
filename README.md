@@ -23,3 +23,7 @@ After that run test with:
 ### Postman requests collection
 
 You can import all available API calls to Postman using `postman_collection.json` file
+
+### API documentation
+
+Check `API_DOCS.md`
