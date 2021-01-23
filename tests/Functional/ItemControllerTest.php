@@ -169,7 +169,8 @@ class ItemControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode());
         $this->assertJson($client->getResponse()->getContent());
-        $this->assertArrayHasKey('error', json_decode($client->getResponse()->getContent(), true));
-        $this->assertStringContainsString('No item', $client->getResponse()->getContent());
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertArrayHasKey('error', $data);
+        $this->assertStringContainsString('Current user don\'t own the entity.', $data['error']);
     }
 }
